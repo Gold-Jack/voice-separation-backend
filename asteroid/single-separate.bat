@@ -1,0 +1,1 @@
+cd E:\IDEA-workspace\voice-separation-backend\asteroid && E: && conda activate asteroid && asteroid-infer "JorisCos/DPRNNTasNet-ks2_Libri1Mix_enhsingle_16k" -r -f --files %1

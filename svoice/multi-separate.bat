@@ -1,0 +1,1 @@
+cd E:\python-workspace\svoice && E: && E:\Environment\Miniconda\envs\svoice\python.exe -m svoice.separate .\outputs\checkpoint.th E:\IDEA-Workspace\voice-separation-backend\svoice\separate_dir --mix_dir=E:\IDEA-Workspace\voice-separation-backend\svoice\mix_dir
