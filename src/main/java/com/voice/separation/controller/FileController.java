@@ -3,13 +3,16 @@ package com.voice.separation.controller;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.voice.separation.pojo.File;
 import com.voice.separation.service.IFileService;
 import com.voice.separation.service.IUserService;
 import com.voice.separation.util.R;
+import com.voice.separation.util.ResponseCode;
 import io.swagger.annotations.ApiOperation;
+import net.bytebuddy.implementation.bind.annotation.Default;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -22,6 +25,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayDeque;
+import java.util.List;
+import java.util.Queue;
+
+import static com.voice.separation.util.ResponseCode.CODE_302;
 
 /**
  * <p>
@@ -49,7 +57,7 @@ public class FileController {
     private IUserService userService;
 
     @PostMapping(value = "upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public R uploadFile( @RequestParam(value = "userId") int userId,
+    public R uploadFile( @RequestParam(value = "userId", defaultValue = "2") int userId,
             @RequestPart(value = "file") MultipartFile file) throws IOException {
         // 获取原始文件名
         String originalFileName = file.getOriginalFilename();
@@ -117,6 +125,32 @@ public class FileController {
         os.flush();
         os.close();
         return R.success();
+    }
+
+    @Deprecated
+    @ApiOperation("下载文件，直接返回文件本身")
+    @GetMapping("download")
+    public java.io.File directDownload(@RequestParam(value = "url") String downloadUrl) {
+        java.io.File file = new java.io.File(downloadUrl);
+        return file;
+    }
+
+    @ApiOperation("获取用户上传的所有文件信息")
+    @GetMapping("get/user-files")
+    public R getUserFiles(@RequestParam String username) {
+        // 确认当前用户是存在的
+        if (userService.getOneByUsername(username) == null)
+            return R.error(CODE_302, CODE_302.getCodeMessage());
+
+        List<File> userFiles = fileService.getUserFiles(username);
+        return R.success(userFiles);
+    }
+
+    @ApiOperation("通过fileId获取文件的downloadUrl")
+    @GetMapping("get/download-url")
+    public R getDownloadUrlById(@RequestParam Integer fileId) {
+        String downloadUrl = fileService.getDownloadUrl(fileId);
+        return R.success(downloadUrl);
     }
 
     @ApiOperation("用过用户id获取用户名，并拼接成文件上传路径")

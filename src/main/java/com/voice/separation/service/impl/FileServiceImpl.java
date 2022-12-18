@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * <p>
@@ -42,5 +44,11 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IF
     @Override
     public File getFileByMd5(String fileMd5) {
         return fileMapper.getFileByMd5(fileMd5);
+    }
+
+    @Override
+    public List<File> getUserFiles(String username) {
+        List<File> files = fileMapper.getUserFiles(username);
+        return files;
     }
 }

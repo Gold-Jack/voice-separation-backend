@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 @RequestMapping("/single-voice/separate/")
 public class SingleVoiceSeparationController {
 
-    private final String ASTEROID_PATH = "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid";
+    private final String ASTEROID_PATH = "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\mix_audio";
 
     @Autowired
     private FileController fileController;

@@ -1,5 +1,6 @@
 package com.voice.separation.service;
 
+import com.voice.separation.pojo.File;
 import com.voice.separation.pojo.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 

@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.voice.separation.mapper.FileMapper">
 
+    <sql id="user-file-fields">
+        file_id, filename, file_owner, is_downloaded, file_tag, file_size, download_url, create_time, update_time, file_uuid
+    </sql>
+
     <select id="getDownloadUrl" resultType="String">
         select download_url from voice.file where file_id=#{fileId};
     </select>
@@ -16,5 +20,10 @@
 
     <select id="getFileOwnerByUuid" resultType="String">
         select file_owner from voice.file where file_uuid=#{fileUuid};
+    </select>
+
+    <select id="getUserFiles" resultType="File">
+        select <include refid="user-file-fields"/>
+            from voice.file where file_owner=#{username};
     </select>
 </mapper>

@@ -35,7 +35,7 @@ public class UserController {
     @Autowired
     public TokenManager tokenManager;
 
-    @GetMapping("get/oneUser")
+    @GetMapping("get-authority")
     public String getAuthority(@RequestParam("userId") int userId) {
         return userService.getAuthority(userId);
     }
@@ -56,9 +56,9 @@ public class UserController {
 
         // 密码验证
         if ( !(passwordEncoder.matches(user.getPassword(), databaseUser.getPassword())
-                || (StrUtil.equals(databaseUser.getAuthority(), "ADMIN") && StrUtil.equals(user.getPassword(), databaseUser.getPassword()))) ) {
+                || isSpecialUser(user, databaseUser) )) {
             // 第一行是判断普通用户的加密
-            // 第二行是判断ADMIN的未加密密码（仅开发环境用）
+            // 第二行是判断ADMIN的未加密密码（仅开发环境用）或者其他特殊用户
             return R.error(CODE_300, CODE_300.getCodeMessage());
         }
 
@@ -98,5 +98,14 @@ public class UserController {
         user.setToken(StrUtil.EMPTY);
         userService.updateUserInfo(user);
         return R.success();
+    }
+
+    @ApiOperation("特殊用户登陆判断")
+    private boolean isSpecialUser(User loginUser, User databaseUser) {
+        if (StrUtil.equals(databaseUser.getAuthority(), "ADMIN") && StrUtil.equals(loginUser.getPassword(), databaseUser.getPassword()))
+            return true;
+        if (StrUtil.equals(databaseUser.getAuthority(), "GUEST") && StrUtil.equals(loginUser.getPassword(), databaseUser.getPassword()))
+            return true;
+        return false;
     }
 }
