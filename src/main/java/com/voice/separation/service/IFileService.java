@@ -19,4 +19,8 @@ public interface IFileService extends IService<File> {
     public String getFileOwner(String fileUuid);
     public File getFileByMd5(String fileMd5);
     public List<File> getUserFiles(String username);
+    public String getFilenameByUrl(String downloadUrl);
+    public java.io.File getFileByUrl(String fileUrl);
+    public Integer getFileIdByUuid(String fileUuid);
+    public String getFilename(Integer fileId);
 }

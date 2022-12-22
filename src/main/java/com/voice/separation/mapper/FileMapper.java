@@ -21,4 +21,8 @@ public interface FileMapper extends BaseMapper<File> {
     public String getFileOwnerByUuid(String fileUuid);
     public File getFileByMd5(String fileMd5);
     public List<File> getUserFiles(String username);
+    public String getFilenameByUrl(String downloadUrl);
+    public Integer getFileIdByUrl(String fileUrl);
+    public Integer getFileIdByUuid(String fileUuid);
+    public String getFilename(Integer fileId);
 }

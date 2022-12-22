@@ -3,31 +3,24 @@ package com.voice.separation.controller;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.voice.separation.pojo.File;
 import com.voice.separation.service.IFileService;
 import com.voice.separation.service.IUserService;
 import com.voice.separation.util.R;
-import com.voice.separation.util.ResponseCode;
 import io.swagger.annotations.ApiOperation;
-import net.bytebuddy.implementation.bind.annotation.Default;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayDeque;
 import java.util.List;
-import java.util.Queue;
 
 import static com.voice.separation.util.ResponseCode.CODE_302;
 
@@ -67,7 +60,7 @@ public class FileController {
         // uuid可以唯一标识文件，防止文件重名
         String uuid = IdUtil.fastSimpleUUID();
         String fileUUID = uuid + StrUtil.DOT + fileType;
-        java.io.File uploadFile = new java.io.File(getFileUploadPath(userId) + fileUUID);
+        java.io.File uploadFile = new java.io.File(getFileUploadPath(userId) + originalFileName);
 
         // 检查文件上传路径是否为空，如果为空，新建文件夹
         if (!uploadFile.getParentFile().exists()) {
@@ -77,7 +70,7 @@ public class FileController {
         // 利用文件md5码，防止相同文件多次上传，挤占内存空间
         String md5 = SecureUtil.md5(file.getInputStream());     // 根据上传文件生成md5，getInputStream()是为了把MultipartFile转为java.util.File类型
         File dbFile = fileService.getFileByMd5(md5);           // 查询数据库中是否有相同的md5
-        if (dbFile != null) {   // 数据库中已经有相同的文件
+        if (dbFile != null && StrUtil.equals(dbFile.getFileOwner(), userService.getUsernameById(userId))) {   // 数据库中已经有相同的文件
             return R.success(dbFile.getDownloadUrl());   // 直接返回该文件的downloadUrl
         }
 
@@ -114,7 +107,8 @@ public class FileController {
                           HttpServletResponse response) throws IOException {
         // 根据文件唯一标识码获取文件
         Integer userId = userService.getOneByUsername(fileService.getFileOwner(fileUuid)).getUserId();
-        java.io.File targetFile = new java.io.File(getFileUploadPath(userId) + fileUuid);
+        String filename = fileService.getFilename(fileService.getFileIdByUuid(fileUuid));
+        java.io.File targetFile = new java.io.File(getFileUploadPath(userId) + filename);
         // 设置输出流格式
         ServletOutputStream os = response.getOutputStream();
         response.addHeader("Content-Disposition", "attachment; filename=" + URLDecoder.decode(fileUuid, CharsetUtil.UTF_8));
@@ -151,6 +145,12 @@ public class FileController {
     public R getDownloadUrlById(@RequestParam Integer fileId) {
         String downloadUrl = fileService.getDownloadUrl(fileId);
         return R.success(downloadUrl);
+    }
+
+    @ApiOperation("通过文件url获得文件名")
+    @GetMapping("get/filename")
+    public R getFilenameByUrl(@RequestParam String downloadUrl) {
+        return R.success(fileService.getFilenameByUrl(downloadUrl));
     }
 
     @ApiOperation("用过用户id获取用户名，并拼接成文件上传路径")

@@ -31,8 +31,8 @@ public class SingleVoiceSeparationController {
 
     @ApiOperation("默认-单音频分离，采用DPRNN的libri1Mix模型")
     @PostMapping("default")
-    public R<String> voiceNoiseSeparation(@RequestParam Integer userId,
-                                          @RequestPart(value = "toSeparateFile") MultipartFile audioWithNoise)
+    public R<String> voiceNoiseSeparation(@RequestParam(defaultValue = "2") Integer userId,
+                                          @RequestPart(value = "file") MultipartFile audioWithNoise)
             throws IOException, InterruptedException {
         // 扩展名，这里的扩展名没有.，即a.txt的extName是txt
         String audioWithNoiseExtendedName = FileUtil.extName(audioWithNoise.getOriginalFilename());

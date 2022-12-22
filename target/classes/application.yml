@@ -27,7 +27,7 @@ mybatis-plus:
 # 文件上传、存储路径
 files:
   upload:
-    path: E:/IDEA-Workspace/voice-separation/files/
+    path: E:/IDEA-Workspace/voice-separation/localized-files/
 
 server:
   port: 8080

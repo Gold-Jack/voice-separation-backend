@@ -14,6 +14,10 @@
         select file_owner from voice.file where file_id=#{fileId};
     </select>
 
+    <select id="getFileIdByUrl" resultType="Integer">
+        select file_id from voice.file where download_url=#{fileUrl};
+    </select>
+
     <select id="getFileByMd5" resultType="File">
         select * from voice.file where file_md5=#{fileMd5};
     </select>
@@ -25,5 +29,17 @@
     <select id="getUserFiles" resultType="File">
         select <include refid="user-file-fields"/>
             from voice.file where file_owner=#{username};
+    </select>
+
+    <select id="getFilenameByUrl" resultType="String">
+        select filename from voice.file where download_url=#{downloadUrl};
+    </select>
+
+    <select id="getFileIdByUuid" resultType="Integer">
+        select file_id from voice.file where file_uuid=#{fileUuid};
+    </select>
+
+    <select id="getFilename" resultType="String">
+        select filename from voice.file where file_id=#{fileId};
     </select>
 </mapper>

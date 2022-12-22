@@ -2,6 +2,7 @@ package com.voice.separation.controller;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
+import com.voice.separation.service.IFileService;
 import com.voice.separation.util.AudioUtil;
 import com.voice.separation.util.MultipartFileUtil;
 import com.voice.separation.util.R;
@@ -38,11 +39,13 @@ public class MultiVoiceSeparationController {
 
     @Autowired
     private FileController fileController;
+    @Autowired
+    private IFileService fileService;
 
     @ApiOperation("默认-多音频分离方法，采用svoice的模型")
     @PostMapping("default")
-    public R<List<String>> separate2voice(@RequestParam Integer userId,
-                                          @RequestPart(value = "toSeparateFile") MultipartFile sourceAudio)
+    public R<List<String>> separate2voice(@RequestParam(defaultValue = "2") Integer userId,
+                                          @RequestPart(value = "file") MultipartFile sourceAudio)
             throws IOException, InterruptedException {
         // 当前方法是几人声分离
         final Integer num_src = 2;
@@ -90,16 +93,15 @@ public class MultiVoiceSeparationController {
         * 所以在此认为，所有separate_dir下，文件名包含"sourceFile_s*"的均为分离后文件，也包含源文件
         * */
         java.io.File separate_dir = new java.io.File(SEPARATE_DIR_PATH);
-        try (Stream<Path> paths = Files.walk(Paths.get(SEPARATE_DIR_PATH))){
-            List<Path> fileNames = paths
+        try (Stream<Path> paths = Files.walk(Paths.get(SEPARATE_DIR_PATH))) {
+            List<Path> filenames = paths
                     .filter(Files::isRegularFile)
                     .collect(Collectors.toList());
-            for (Path fileName : fileNames) {
+            for (Path filename : filenames) {
                 assert sourceAudioFilename != null;
-                if (fileName.toString().contains(sourceAudioFilename + "_s")) {
-//                    System.out.println(fileName.toString());
+                if (filename.toString().contains(sourceAudioFilename + "_s")) {
                     String downloadUrl = (String) fileController.uploadFile(userId,
-                            MultipartFileUtil.toMultipartFile(new File(fileName.toUri()))).getData();
+                            MultipartFileUtil.toMultipartFile(new File(filename.toUri()))).getData();
                     separatedVoices.add(downloadUrl);
                 }
             }
@@ -108,5 +110,13 @@ public class MultiVoiceSeparationController {
         }
 
         return R.success(separatedVoices);
+    }
+
+    @ApiOperation("通过已经上传至数据库的源音频文件url，对其进行分离")
+    @GetMapping("by-source-audio-url")
+    public R separate2VoiceByUrl(@RequestParam(defaultValue = "2") Integer userId,
+                                 @RequestParam(value = "url") String sourceAudioUrl) throws IOException, InterruptedException {
+        MultipartFile toSeparateFile = MultipartFileUtil.toMultipartFile(fileService.getFileByUrl(sourceAudioUrl));
+        return separate2voice(userId, toSeparateFile);
     }
 }
