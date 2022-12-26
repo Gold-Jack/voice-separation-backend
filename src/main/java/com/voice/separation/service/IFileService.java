@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface IFileService extends IService<File> {
     public String getDownloadUrl(int fileId);
-    public String getFileOwner(int fileId);
+    public String getFileOwner(Integer fileId);
     public String getFileOwner(String fileUuid);
     public File getFileByMd5(String fileMd5);
     public List<File> getUserFiles(String username);
@@ -23,4 +23,8 @@ public interface IFileService extends IService<File> {
     public java.io.File getFileByUrl(String fileUrl);
     public Integer getFileIdByUuid(String fileUuid);
     public String getFilename(Integer fileId);
+    public boolean removeFile(Integer fileId);
+    public boolean removeDirFile(String filePath);
+    public boolean removeDirFile(List<String> filePaths);
+    public boolean removeDirAll(String dirPath);
 }

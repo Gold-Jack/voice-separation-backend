@@ -36,10 +36,16 @@ project:
   deployment:
     host: localhost
 
-api:
-  path:
-    svoice: "E:\\python-workspace\\svoice"
+path:
+  svoice:
+    self: "E:\\IDEA-Workspace\\voice-separation-backend\\svoice"
     mix_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\svoice\\mix_dir"
     separate_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\svoice\\separate_dir"
     model_checkpoint: "E:\\python-workspace\\svoice\\outputs\\checkpoint.th"
     separate_script: "E:\\IDEA-Workspace\\voice-separation-backend\\svoice\\multi-separate.bat"
+    separate_file_identifier: "_s"
+  asteroid:
+    mix_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\mix_audio"
+    separate_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\mix_audio"
+    separate_script: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\asteroid-separate.py"
+    separate_file_identifier: "_ext"

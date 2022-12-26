@@ -42,4 +42,8 @@
     <select id="getFilename" resultType="String">
         select filename from voice.file where file_id=#{fileId};
     </select>
+
+    <delete id="removeFile">
+        delete from voice.file where file_id=#{fileId};
+    </delete>
 </mapper>

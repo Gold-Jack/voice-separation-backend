@@ -7,6 +7,7 @@ import com.voice.separation.util.MultipartFileUtil;
 import com.voice.separation.util.R;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,7 +25,8 @@ import java.util.stream.Stream;
 @RequestMapping("/single-voice/separate/")
 public class SingleVoiceSeparationController {
 
-    private final String ASTEROID_PATH = "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\mix_audio";
+    @Value("${path.asteroid.mix_dir}")
+    private String ASTEROID_PATH;
 
     @Autowired
     private FileController fileController;

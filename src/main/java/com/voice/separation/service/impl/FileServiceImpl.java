@@ -34,7 +34,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IF
     }
 
     @Override
-    public String getFileOwner(int fileId) {
+    public String getFileOwner(Integer fileId) {
         return fileMapper.getFileOwner(fileId);
     }
 
@@ -79,5 +79,51 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, File> implements IF
     @Override
     public String getFilename(Integer fileId) {
         return fileMapper.getFilename(fileId);
+    }
+
+    @Override
+    public boolean removeFile(Integer fileId) {
+        fileMapper.removeFile(fileId);
+        return true;
+    }
+
+    @Override
+    public boolean removeDirFile(String filePath) {
+        java.io.File toRemoveFile = new java.io.File(filePath);
+        return toRemoveFile.delete();       // 是否删除成功
+    }
+
+    @Override
+    public boolean removeDirFile(List<String> filePaths) {
+        for (String filePath : filePaths) {
+            if (!removeDirFile(filePath))
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean removeDirAll(String dirPath) {
+        java.io.File dir = new java.io.File(dirPath);
+        if (!dir.exists()) {
+            System.err.println(dirPath + "does not exist! removeDirAll() failed.");
+            return false;
+        }
+
+        String[] content = dir.list();
+        assert content != null;
+        for (String name : content) {
+            java.io.File tempFile = new java.io.File(dirPath, name);
+            if (tempFile.isDirectory()) {
+                removeDirAll(tempFile.getAbsolutePath());
+                tempFile.delete();
+            } else {
+                if (!tempFile.delete()) {
+                    System.err.println(tempFile + "delete failed! <- removeDirAll().");
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

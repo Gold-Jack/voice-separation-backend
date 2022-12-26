@@ -25,4 +25,5 @@ public interface FileMapper extends BaseMapper<File> {
     public Integer getFileIdByUrl(String fileUrl);
     public Integer getFileIdByUuid(String fileUuid);
     public String getFilename(Integer fileId);
+    public void removeFile(Integer fileId);
 }
