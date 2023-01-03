@@ -64,6 +64,8 @@ public class MultiVoiceSeparationController {
 
         List<URI> separateFilePaths = separateService.basicSeparate(sourceAudio, num_src, MIX_DIR_PATH, SEPARATE_DIR_PATH,
                 SCRIPT_PATH, SEPARATE_FILE_IDENTIFIER);
+
+        assert separateFilePaths != null;
         for (URI filePath : separateFilePaths) {
             File tempFile = new File(filePath);
             String downloadUrl = (String) fileController.uploadFile(userId, MultipartFileUtil.toMultipartFile(tempFile)).getData();

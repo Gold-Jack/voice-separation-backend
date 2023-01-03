@@ -45,6 +45,7 @@ path:
     separate_script: "E:\\IDEA-Workspace\\voice-separation-backend\\svoice\\multi-separate.bat"
     separate_file_identifier: "_s"
   asteroid:
+    self: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid"
     mix_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\mix_audio"
     separate_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\mix_audio"
     separate_script: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\asteroid-separate.py"
