@@ -48,5 +48,5 @@ path:
     self: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid"
     mix_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\mix_audio"
     separate_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\mix_audio"
-    separate_script: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\asteroid-separate.py"
-    separate_file_identifier: "_ext"
+    separate_script: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\single-separate.bat"
+    separate_file_identifier: "_est"

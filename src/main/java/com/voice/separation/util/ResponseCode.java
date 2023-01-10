@@ -17,7 +17,7 @@ public enum ResponseCode {
      *
      * 3xx : database error
      *      30x : username/password error
-     *      31x : manipulating databse error
+     *      31x : manipulating database error
      *      38x : permission or authorization error
      * 4xx : frontend-backend interaction error
      *      404 : 404 not found
@@ -28,6 +28,8 @@ public enum ResponseCode {
     CODE_102("文件下载失败"),
 
     CODE_200("成功OK"),
+    CODE_210("单人声-噪声分离失败"),
+    CODE_220("两人声分离失败"),
 
     CODE_300("密码错误"),
     CODE_301("用户名重复"),
