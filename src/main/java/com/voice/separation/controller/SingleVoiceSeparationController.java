@@ -62,7 +62,7 @@ public class SingleVoiceSeparationController {
 
         System.out.println(separateFilePaths);
         assert separateFilePaths != null;
-        if (separateFilePaths.size() != 1) {
+        if (separateFilePaths.size() < 1) {
             System.err.println("Something might go wrong in " + SingleVoiceSeparationController.class.getName() +
                     ". Because after single-voice-separation comes multi-voice results");
             System.err.println("separate-files-num: " + separateFilePaths.size());
