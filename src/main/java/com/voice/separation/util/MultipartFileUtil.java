@@ -1,6 +1,9 @@
 package com.voice.separation.util;
 
 import cn.hutool.core.io.FileUtil;
+import org.apache.hc.core5.http.ContentType;
+import org.bson.types.Binary;
+import org.springframework.lang.Nullable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +28,8 @@ public class MultipartFileUtil extends FileUtil {
         return multipartFile;
     }
 
-    public static File getFileByUrl(String url) {
-        return null;
+    public static MultipartFile toMultipartFile(Binary binary, String originalName, String binaryName) {
+        MockMultipartFile mock = new MockMultipartFile(binaryName, originalName, ContentType.APPLICATION_OCTET_STREAM.toString(), binary.getData());
+        return mock;
     }
 }

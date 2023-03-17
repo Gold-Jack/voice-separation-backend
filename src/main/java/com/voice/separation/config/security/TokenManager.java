@@ -4,8 +4,9 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.voice.separation.service.IUserService;
+import com.voice.separation.repository.UserRepository;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -19,11 +20,11 @@ import java.util.Date;
 @Getter // 为了JwtInterceptor解析token时，可以用过get方法获取tokenSignKey
 public class TokenManager {
 
-    @Resource
-    private IUserService userService;
+    @Autowired
+    private UserRepository userRepository;
 
     //编码秘钥
-    private String tokenSignKey = "2022-12-06 17:45:33";   // 这里暂且用项目开始的日期作为签名
+    private String tokenSignKey = "2023-03-07 13:07:31";   // 这里暂且用项目开始的日期作为签名
 
     // 使用jwt根据用户名生成token
     public String genToken(String username) {

@@ -1,12 +1,7 @@
-package com.voice.separation.service.impl;
+package com.voice.separation.util;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
-import com.voice.separation.service.IFileService;
-import com.voice.separation.service.ISeparateService;
-import com.voice.separation.util.AudioUtil;
-import com.voice.separation.util.MultipartFileUtil;
-import com.voice.separation.util.R;
+import com.voice.separation.repository.AudioFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -24,17 +19,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.voice.separation.util.ResponseCode.CODE_220;
+
 @Service
 @Primary
-public class SeparateServiceImpl implements ISeparateService {
+public class SeparateUtil {
 
     @Autowired
-    private IFileService fileService;
+    private AudioFileRepository audioFileRepository;
 
-    private final List<String> ALLOWED_EXT_NAME = new ArrayList<>(Arrays.asList("wav", "always_blank"));
+    private static final List<String> ALLOWED_EXT_NAME = new ArrayList<>(Arrays.asList("wav", "always_blank"));
 
-    @Override
-    public List<URI> basicSeparate(MultipartFile audio, Integer sourceNum, String mixPath, String separatePath,
+
+    public static List<URI> basicSeparate(MultipartFile audio, Integer sourceNum, String mixPath, String separatePath,
                                       String scriptPath, String separateFileIdentifier) throws IOException, InterruptedException {
         String originalName = audio.getOriginalFilename();
         String audioExtName = FileUtil.extName(originalName);
@@ -47,7 +44,7 @@ public class SeparateServiceImpl implements ISeparateService {
         }
 
         mixPath = mixPath.replace("\\", "/");
-        java.io.File mix_dir = new java.io.File(mixPath, originalName);
+        File mix_dir = new File(mixPath, originalName);
         if (!mix_dir.getParentFile().exists()) {
             mix_dir.getParentFile().mkdirs();
         }
@@ -69,7 +66,7 @@ public class SeparateServiceImpl implements ISeparateService {
          * - sourceFile_s2.wav
          * 所以在此认为，所有separate_dir下，文件名包含"sourceFile_s*"的均为分离后文件，也包含源文件
          * */
-        java.io.File separate_dir = new java.io.File(separatePath);
+        File separate_dir = new File(separatePath);
         String prefixAudioName = FileUtil.getPrefix(originalName);
         List<URI> results = new ArrayList<>();
         try (Stream<Path> paths = Files.walk(Paths.get(separatePath))) {
@@ -88,5 +85,52 @@ public class SeparateServiceImpl implements ISeparateService {
         }
 
         return results;
+    }
+
+    public static boolean removeDirFile(String filePath) {
+        java.io.File toRemoveFile = new java.io.File(filePath);
+        return toRemoveFile.delete();       // 是否删除成功
+    }
+
+    public static boolean removeDirFile(List<String> filePaths) {
+        for (String filePath : filePaths) {
+            if (!removeDirFile(filePath))
+                return false;
+        }
+        return true;
+    }
+
+    public static boolean removeDirAll(String dirPath) {
+        java.io.File dir = new java.io.File(dirPath);
+        if (!dir.exists()) {
+            System.err.println(dirPath + "does not exist! removeDirAll() failed.");
+            return false;
+        }
+
+        String[] content = dir.list();
+        assert content != null;
+        for (String name : content) {
+            java.io.File tempFile = new java.io.File(dirPath, name);
+            if (tempFile.isDirectory()) {
+                removeDirAll(tempFile.getAbsolutePath());
+                tempFile.delete();
+            } else {
+                if (!tempFile.delete()) {
+                    System.err.println(tempFile + "delete failed! <- removeDirAll().");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean checkResults(List<URI> results, int numSrc, Class<?> fromClass) {
+        if (results.size() < numSrc) {
+            System.err.println(fromClass.getName() + ":(wrote by Jack)");
+            System.err.println("\tSeparate result files are insufficient, please check again. Separation FAILED!!!");
+            return false;
+        }
+        // TODO: 检查results文件的合法性
+        return true;
     }
 }

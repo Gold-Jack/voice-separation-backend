@@ -26,6 +26,7 @@ public enum ResponseCode {
     CODE_100("系统错误或异常"),
     CODE_101("文件上传失败"),
     CODE_102("文件下载失败"),
+    CODE_103("文件不存在"),
 
     CODE_200("成功OK"),
     CODE_210("单人声-噪声分离失败"),
