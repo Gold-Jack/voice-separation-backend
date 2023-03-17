@@ -10,19 +10,23 @@ spring:
     multipart:
       max-request-size: 1GB
       max-file-size: 1GB
+  data:
+    mongodb:
+      database: voice-separation
+      uri: mongodb+srv://jack:admin@cluster0.ureiwg7.mongodb.net/voice-separation
 
-mybatis-plus:
-  global-config:
-    db-config:
-      #      logic-delete-field: flag # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
-      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
-      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    use-generated-keys: true
-    map-underscore-to-camel-case: true
-  mapper-locations: classpath:com/voice/separation/mapper/xml/**.xml
-  type-aliases-package: com.voice.separation.pojo
+#mybatis-plus:
+#  global-config:
+#    db-config:
+#      #      logic-delete-field: flag # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+#      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+#      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    use-generated-keys: true
+#    map-underscore-to-camel-case: true
+#  mapper-locations: classpath:com/voice/separation/mapper/xml/**.xml
+#  type-aliases-package: com.voice.separation.pojo
 
 # 文件上传、存储路径
 #files:
