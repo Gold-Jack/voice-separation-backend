@@ -44,11 +44,11 @@ public class FileController {
     private static final String LOCAL_FILE_PREFIX = "/localized-files/";
 
     @Value("${project.deployment.host}")
-    private static String HOST;
+    private String HOST;
     @Value("${server.port}")
-    private static String PORT;
-    private static String HEADER = "http://";
-    private static String DOWNLOAD_PATH = "/file/download/";
+    private String PORT;
+    private String HEADER = "http://";
+    private String DOWNLOAD_PATH = "/file/download/";
 
     public static String DEFAULT_OWNER = "GUEST";
 
@@ -81,23 +81,25 @@ public class FileController {
             insert = audioFileRepository.insert(new AudioFile(audioName, owner, binary));
         }
         String audioId = insert.getAudioId();
-        String downloadUrl = FileController.encodeDownloadUrl(audioId);
+        String downloadUrl = encodeDownloadUrl(audioId);
         insert.setDownloadUrl(downloadUrl);
 
         return R.success(downloadUrl);
     }
 
     @ApiOperation("下载文件（获取文件）")
-    @GetMapping("/download/{audioName}")
-    public R downloadFile(@PathVariable String audioName,
+    @GetMapping("/download/{audioId}")
+    public R downloadFile(@PathVariable String audioId,
                              HttpServletResponse response) throws IOException {
-        Optional<AudioFile> audioOpt = audioFileRepository.findAudio(audioName);
+        Optional<AudioFile> audioOpt = audioFileRepository.findAudioById(audioId);
         if (!audioOpt.isPresent()) {
             return R.error(CODE_311, CODE_311.getCodeMessage());
         }
-        Binary binary = audioOpt.get().getBinary();
+        AudioFile audioFile = audioOpt.get();
+        Binary binary = audioFile.getBinary();
         if (binary == null)
             return R.error(CODE_103, CODE_103.getCodeMessage());
+        String audioName = audioFile.getAudioName();
 
         // 设置输出流格式
         ServletOutputStream os = response.getOutputStream();
@@ -112,7 +114,7 @@ public class FileController {
     }
 
     public MultipartFile getMultipartFileByUrl(String url) {
-        String audioId = FileController.decodeDownloadUrl(url);
+        String audioId = decodeDownloadUrl(url);
         Optional<AudioFile> audioOpt = audioFileRepository.findAudioById(audioId);
         if (!audioOpt.isPresent())
             return null;
@@ -121,12 +123,12 @@ public class FileController {
         return toSeparateFile;
     }
 
-    public static String encodeDownloadUrl(String audioId) {
+    public String encodeDownloadUrl(String audioId) {
         String downloadUrl = HEADER + HOST + ":" + PORT + DOWNLOAD_PATH + audioId;
         return downloadUrl;
     }
 
-    public static String decodeDownloadUrl(String downloadUrl) {
+    public String decodeDownloadUrl(String downloadUrl) {
         String[] s = downloadUrl.split("/");
         return s[s.length - 1];
     }

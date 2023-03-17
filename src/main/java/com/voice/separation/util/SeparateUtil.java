@@ -43,19 +43,17 @@ public class SeparateUtil {
             audioExtName = "wav";
         }
 
-        mixPath = mixPath.replace("\\", "/");
         File mix_dir = new File(mixPath, originalName);
         if (!mix_dir.getParentFile().exists()) {
             mix_dir.getParentFile().mkdirs();
         }
         // 复制语音文件到分离文件夹
-        audio.transferTo(mix_dir);
+//        audio.transferTo(mix_dir);
+        FileUtil.copy(MultipartFileUtil.toFile(audio), mix_dir, true);
 
         // 执行分离
         String[] separateCmd = {"cmd", "/c", scriptPath};
         Process process = Runtime.getRuntime().exec(separateCmd);
-        // 下面这种直接写执行语句的方法即将被废弃(@deprecated)
-        // Process process = Runtime.getRuntime().exec("cmd /c E:\\python-workspace\\svoice\\activate.bat");
         process.waitFor();
 
         // 使用Files.walk遍历separate_dir下的所有被分离的文件
@@ -66,7 +64,6 @@ public class SeparateUtil {
          * - sourceFile_s2.wav
          * 所以在此认为，所有separate_dir下，文件名包含"sourceFile_s*"的均为分离后文件，也包含源文件
          * */
-        File separate_dir = new File(separatePath);
         String prefixAudioName = FileUtil.getPrefix(originalName);
         List<URI> results = new ArrayList<>();
         try (Stream<Path> paths = Files.walk(Paths.get(separatePath))) {
@@ -127,7 +124,7 @@ public class SeparateUtil {
     public static boolean checkResults(List<URI> results, int numSrc, Class<?> fromClass) {
         if (results.size() < numSrc) {
             System.err.println(fromClass.getName() + ":(wrote by Jack)");
-            System.err.println("\tSeparate result files are insufficient, please check again. Separation FAILED!!!");
+            System.err.println("\tSeparate result files(count: " + results.size() + ") are insufficient, please check again. Separation FAILED!!!");
             return false;
         }
         // TODO: 检查results文件的合法性

@@ -31,6 +31,7 @@ import static com.voice.separation.util.ResponseCode.CODE_220;
 @RequestMapping("/multi-voice/separate")
 public class MultiVoiceSeparationController {
 
+    private static final String PROJECT_PATH = System.getProperty("user.dir");
     @Value("${path.svoice.self}")
     private String SVOICE_PATH;
     @Value("${path.svoice.mix_dir}")
@@ -83,8 +84,8 @@ public class MultiVoiceSeparationController {
     }
 
     @ApiOperation("通过已经上传至数据库的源音频文件url，对其进行分离")
-    @GetMapping("/by-source-audio-url")
-    public R separate2VoiceByUrl(@RequestParam(defaultValue = "2") Integer userId,
+    @PostMapping("/by-source-audio-url")
+    public R separate2VoiceByUrl(@RequestParam(defaultValue = "2", required = false) Integer userId,
                                  @RequestParam(value = "url") String sourceAudioUrl) throws IOException, InterruptedException {
         MultipartFile toSeparateFile = fileController.getMultipartFileByUrl(sourceAudioUrl);
         if (toSeparateFile == null)

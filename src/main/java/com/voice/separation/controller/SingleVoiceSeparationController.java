@@ -26,6 +26,7 @@ import static com.voice.separation.util.ResponseCode.CODE_210;
 @RequestMapping("/single-voice/separate")
 public class SingleVoiceSeparationController {
 
+    private static final String PROJECT_PATH = System.getProperty("user.dir");
     @Value("${path.asteroid.self}")
     private String ASTEROID_PATH;
     @Value("${path.asteroid.mix_dir}")
@@ -56,11 +57,12 @@ public class SingleVoiceSeparationController {
         // 且asteroid模型需要指定分离的源音频文件，
         // 所以需要把script后面加入源音频文件的路径
         final String filename = audioFile.getOriginalFilename();
-        SCRIPT_PATH += " " + MIX_DIR_PATH + "\\" + filename;
+        SCRIPT_PATH += " " + PROJECT_PATH + "\\" + MIX_DIR_PATH + "\\" + filename;
 
         List<URI> separateFilePaths = SeparateUtil.basicSeparate(audioFile, NUM_SRC,
                 MIX_DIR_PATH, SEPARATE_DIR_PATH, SCRIPT_PATH,
                 SEPARATE_FILE_IDENTIFIER);
+
         if (!SeparateUtil.checkResults(separateFilePaths, NUM_SRC, this.getClass())) {
             return R.error(CODE_210, CODE_210.getCodeMessage());
         }
@@ -82,8 +84,8 @@ public class SingleVoiceSeparationController {
     }
 
     @ApiOperation("通过已经上传至数据库的源音频文件url，对其进行分离")
-    @GetMapping("/by-source-audio-url")
-    public R separate2VoiceByUrl(@RequestParam(defaultValue = "2") Integer userId,
+    @PostMapping("/by-source-audio-url")
+    public R separate2VoiceByUrl(@RequestParam(defaultValue = "2", required = false) Integer userId,
                                  @RequestParam(value = "url") String sourceAudioUrl) throws IOException, InterruptedException {
         MultipartFile toSeparateFile = fileController.getMultipartFileByUrl(sourceAudioUrl);
         if (toSeparateFile == null)

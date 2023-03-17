@@ -1,0 +1,1 @@
+cd E:\IDEA-Workspace\voice-separation-backend-eureka\src\main\resources\asteroid\mix_audio && E: && conda activate asteroid && python ..\asteroid-separate.py %1

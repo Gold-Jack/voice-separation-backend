@@ -1,33 +1,37 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: admin
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: root
+#    password: admin
     # user_db: 数据库名称
     # serverTimeZone: mysql8.0必须配置
-    url: jdbc:mysql://localhost:3306/voice?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=utf-8
+#    url: jdbc:mysql://localhost:3306/voice?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=utf-8
   servlet:
     multipart:
       max-request-size: 1GB
       max-file-size: 1GB
+  data:
+    mongodb:
+      database: voice-separation
+      uri: mongodb+srv://jack:admin@cluster0.ureiwg7.mongodb.net/voice-separation
 
-mybatis-plus:
-  global-config:
-    db-config:
-      #      logic-delete-field: flag # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
-      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
-      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    use-generated-keys: true
-    map-underscore-to-camel-case: true
-  mapper-locations: classpath:com/voice/separation/mapper/xml/**.xml
-  type-aliases-package: com.voice.separation.pojo
+#mybatis-plus:
+#  global-config:
+#    db-config:
+#      #      logic-delete-field: flag # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+#      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+#      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    use-generated-keys: true
+#    map-underscore-to-camel-case: true
+#  mapper-locations: classpath:com/voice/separation/mapper/xml/**.xml
+#  type-aliases-package: com.voice.separation.pojo
 
 # 文件上传、存储路径
-files:
-  upload:
-    path: E:/IDEA-Workspace/voice-separation/localized-files/
+#files:
+#  upload:
+#    path: E:/IDEA-Workspace/voice-separation/localized-files/
 
 server:
   port: 8080
@@ -38,15 +42,28 @@ project:
 
 path:
   svoice:
-    self: "E:\\IDEA-Workspace\\voice-separation-backend\\svoice"
-    mix_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\svoice\\mix_dir"
-    separate_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\svoice\\separate_dir"
+    self: src\main\resources\svoice
+    mix_dir: src\main\resources\svoice\mix_dir
+    separate_dir: src\main\resources\svoice\separate_dir
     model_checkpoint: "E:\\python-workspace\\svoice\\outputs\\checkpoint.th"
-    separate_script: "E:\\IDEA-Workspace\\voice-separation-backend\\svoice\\multi-separate.bat"
+    separate_script: src\main\resources\svoice\multi-separate.bat
     separate_file_identifier: "_s"
   asteroid:
-    self: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid"
-    mix_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\mix_audio"
-    separate_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\mix_audio"
-    separate_script: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\single-separate.bat"
+    self: src\main\resources\asteroid
+    mix_dir: src\main\resources\asteroid\mix_audio
+    separate_dir: src\main\resources\asteroid\mix_audio
+    separate_script: src\main\resources\asteroid\single-separate.bat
     separate_file_identifier: "_est"
+#  svoice:
+#    self: "E:\\IDEA-Workspace\\voice-separation-backend\\svoice"
+#    mix_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\svoice\\mix_dir"
+#    separate_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\svoice\\separate_dir"
+#    model_checkpoint: "E:\\python-workspace\\svoice\\outputs\\checkpoint.th"
+#    separate_script: "E:\\IDEA-Workspace\\voice-separation-backend\\svoice\\multi-separate.bat"
+#    separate_file_identifier: "_s"
+#  asteroid:
+#    self: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid"
+#    mix_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\mix_audio"
+#    separate_dir: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\mix_audio"
+#    separate_script: "E:\\IDEA-Workspace\\voice-separation-backend\\asteroid\\single-separate.bat"
+#    separate_file_identifier: "_est"

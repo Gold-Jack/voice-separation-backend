@@ -9,12 +9,12 @@ import java.util.Optional;
 
 public interface AudioFileRepository extends MongoRepository<AudioFile, String> {
 
-    @Query(value = "{audioName: ?0}", fields = "{audioName: 1, binary: 1, owner: 1}")
+    @Query(value = "{audioName: ?0}")
     public Optional<AudioFile> findAudio(String audioName);
 
     @Query(value = "{audioName: ?0, owner: ?1}")
     public Optional<AudioFile> findDeprecation(String audioName, String owner);
 
-    @Query(value = "{audioId: ?0}", fields = "{binary: 1}")
+    @Query(value = "{audioId: ?0}")
     public Optional<AudioFile> findAudioById(String audioId);
 }
